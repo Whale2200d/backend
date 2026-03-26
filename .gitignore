@@ -1,3 +1,6 @@
 # Installers — GitHub rejects blobs over 100MB
 *.dmg
 *.pkg
+
+# Removed nested-repo .git folders kept locally for recovery
+.nested-repo-backups/
