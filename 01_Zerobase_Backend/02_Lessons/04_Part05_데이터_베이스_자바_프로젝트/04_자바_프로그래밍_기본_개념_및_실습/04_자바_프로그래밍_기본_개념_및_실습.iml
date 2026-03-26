@@ -7,8 +7,10 @@
       <sourceFolder url="file://$MODULE_DIR$/03_제어문_반복문" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/04_추상화_클래스" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/05_예시_회원정보_클래스" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/06_DB_연결_설정" isTestSource="false" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="mariadb-java-client-3.5.7" level="project" />
   </component>
 </module>
