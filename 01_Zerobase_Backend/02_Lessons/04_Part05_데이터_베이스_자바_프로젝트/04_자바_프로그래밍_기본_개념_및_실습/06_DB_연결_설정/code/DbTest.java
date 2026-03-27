@@ -29,19 +29,31 @@ public class DbTest {
             throw new RuntimeException(e);
         }
 
-        try {
-            Connection connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+//        CallableStatement callableStatement = null;
+//        Statement statement = null; (파라미터 이슈가 발생하므로 PreparedStatement 사용)
+        PreparedStatement preparedStatement = null;
+        Connection connection = null;
+        ResultSet rs = null;
 
-//            Statement statement = null; (파라미터 이슈가 발생하므로 PreparedStatement 사용)
-//            CallableStatement callableStatement = null;
-//            PreparedStatement preparedStatement = null;
-            Statement statement = connection.createStatement();
+        // email 대신 kakao, facebook 등 유동적으로 값을 사용하고 싶을 때, 변수 사용
+        // (다만, 외부에서 injection 가능하므로, 실무에서는 암호화 필요)
+        String memberTypeValue = "email";
+
+        try {
+            connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+
+
+//            statement = connection.createStatement();
+
 
             String sql = " select member_type, user_id, password, name " +
                     " from_member " +
-                    " where member_type = 'email' ";
+//                    " where member_type = '" + memberTypeValue + "' ";
+                    " where member_type = ? ";
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, memberTypeValue); // PreparedStatement로 SQL Injection 공격 방어 가능
 
-            ResultSet rs = statement.executeQuery(sql);
+            rs = preparedStatement.executeQuery();
 
             while (rs.next()) {
                 String memberType = rs.getString("member_type");
@@ -51,12 +63,24 @@ public class DbTest {
 
                 System.out.println(memberType + ", " + userId + ", " + password + ", " + name);
             }
-
-            if (!rs.isClosed()) { rs.close(); }
-            if (!statement.isClosed()) { statement.close(); }
-            if (!connection.isClosed()) { connection.close(); }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                if (rs != null && !rs.isClosed()) { rs.close(); }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (statement != null && !statement.isClosed()) { statement.close(); }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                if (connection != null && !connection.isClosed()) { connection.close(); }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
