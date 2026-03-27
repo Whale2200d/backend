@@ -72,7 +72,7 @@ public class DbTest {
                 throw new RuntimeException(e);
             }
             try {
-                if (statement != null && !statement.isClosed()) { statement.close(); }
+                if (preparedStatement != null && !preparedStatement.isClosed()) { preparedStatement.close(); }
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
