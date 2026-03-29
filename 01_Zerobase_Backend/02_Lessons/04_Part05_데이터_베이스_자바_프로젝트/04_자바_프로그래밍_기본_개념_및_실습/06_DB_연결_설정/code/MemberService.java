@@ -2,7 +2,7 @@ package code;
 
 import java.sql.*;
 
-public class DbTest {
+public class MemberService {
     public void dbSelect() {
         /**
          * 5개
@@ -83,7 +83,7 @@ public class DbTest {
             }
         }
     }
-    public void dbInsert() {
+    public void register(Member member) {
         /**
          * 5개
          * 1. ip(domain)
@@ -115,13 +115,6 @@ public class DbTest {
         Connection connection = null;
         ResultSet rs = null;
 
-        // email 대신 kakao, facebook 등 유동적으로 값을 사용하고 싶을 때, 변수 사용
-        // (다만, 외부에서 injection 가능하므로, 실무에서는 암호화 필요)
-        String memberTypeValue = "email";
-        String userIdValue = "zerobase@naver.com";
-        String passwordValue = "3333";
-        String nameValue = "제로베이스";
-
         try {
             connection = DriverManager.getConnection(url, dbUserId, dbPassword);
 
@@ -132,10 +125,10 @@ public class DbTest {
             String sql = " insert into member (member_type, user_id, password, name) " +
                     " values (?, ?, ?, ?);";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, memberTypeValue); // PreparedStatement로 SQL Injection 공격 방어 가능
-            preparedStatement.setString(2, userIdValue);
-            preparedStatement.setString(3, passwordValue);
-            preparedStatement.setString(4, nameValue);
+            preparedStatement.setString(1, member.getMemberType()); // PreparedStatement로 SQL Injection 공격 방어 가능
+            preparedStatement.setString(2, member.getUserId());
+            preparedStatement.setString(3, member.getPassword());
+            preparedStatement.setString(4, member.getName());
 
 
             int affected = preparedStatement.executeUpdate();
@@ -247,7 +240,7 @@ public class DbTest {
             }
         }
     }
-    public void dbDelete() {
+    public void withdraw(Member member) {
         /**
          * 5개
          * 1. ip(domain)
@@ -279,11 +272,6 @@ public class DbTest {
         Connection connection = null;
         ResultSet rs = null;
 
-        // email 대신 kakao, facebook 등 유동적으로 값을 사용하고 싶을 때, 변수 사용
-        // (다만, 외부에서 injection 가능하므로, 실무에서는 암호화 필요)
-        String memberTypeValue = "email";
-        String userIdValue = "zerobase@naver.com";
-
         try {
             connection = DriverManager.getConnection(url, dbUserId, dbPassword);
 
@@ -294,8 +282,8 @@ public class DbTest {
             String sql = "delete from member " +
                     "where member_type = ? and user_id = ? ";
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, memberTypeValue); // PreparedStatement로 SQL Injection 공격 방어 가능
-            preparedStatement.setString(2, userIdValue);
+            preparedStatement.setString(1, member.getMemberType()); // PreparedStatement로 SQL Injection 공격 방어 가능
+            preparedStatement.setString(2, member.getUserId());
 
 
 
