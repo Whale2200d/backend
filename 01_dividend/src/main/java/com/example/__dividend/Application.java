@@ -1,6 +1,7 @@
 package com.example.__dividend;
 
 import com.example.__dividend.model.Company;
+import com.example.__dividend.scraper.Scraper;
 import com.example.__dividend.scraper.YahooFinanceScraper;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -18,8 +19,9 @@ public class Application {
 	public static void main(String[] args) {
 //		SpringApplication.run(Application.class, args);
 
-		YahooFinanceScraper scraper = new YahooFinanceScraper();
-		var result = scraper.scrap(Company.builder().ticker("O").build());
+		Scraper scraper = new YahooFinanceScraper();
+//		var result = scraper.scrap(Company.builder().ticker("O").build());
+		var result = scraper.scrapCompanyByTicker("MMM");
 		System.out.println(result);
 	}
 

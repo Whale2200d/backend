@@ -15,15 +15,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class YahooFinanceScraper {
-    private static final String STATISTICS_URL = "https://finance.yahoo.com/quote/%s/history/?frequency=1mo&period1=%d&period2=%d";
+public class YahooFinanceScraper implements Scraper {
     // final: 초기화 이후 값을 변경할 수 없음.
     /** static:
      * 인스턴스를 생성할 때, 여러 개를 생성해서 사용함. 그래서 인스턴스가 생성될 때마다 URL 영역 만큼 Heap 메모리를 할당받게 됨. (비효율적)
      * 이때 URL을 static 변수로 선언하게 되면, Static 변수를 저장하기 위한 Static 영역에 따로 저장하게 됨. (효율적)
      */
+    private static final String STATISTICS_URL = "https://finance.yahoo.com/quote/%s/history/?frequency=1mo&period1=%d&period2=%d";
+    private static final String SUMMARY_URL = "https://finance.yahoo.com/quote/%s";
     private static final long START_TIME = 86400; // 1일, 60초 * 60분 * 24시간
 
+    @Override
     public ScrapedResult scrap(Company company) {
         var scrapedResult = new ScrapedResult();
         scrapedResult.setCompany(company);
@@ -67,5 +69,25 @@ public class YahooFinanceScraper {
         }
 
         return scrapedResult;
+    }
+
+    @Override
+    public Company scrapCompanyByTicker(String ticker) {
+        String url = String.format(SUMMARY_URL, ticker);
+
+        try {
+            Document document = Jsoup.connect(url).get();
+            Element titleElement = document.getElementsByTag("h1").get(1);
+            String title = titleElement.text().trim();
+
+            return Company.builder()
+                            .ticker(ticker)
+                            .name(title)
+                            .build();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
